@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="./xlsx.full.min.js"></script>
+    <script>
+      // from https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
+      function probable_browser() {
+        if (
+          (navigator.userAgent.indexOf("Opera") ||
+            navigator.userAgent.indexOf("OPR")) != -1
+        ) {
+          return "Opera";
+        } else if (navigator.userAgent.indexOf("Edg") != -1) {
+          return "Edge";
+        } else if (navigator.userAgent.indexOf("Chrome") != -1) {
+          return "Chrome";
+        } else if (navigator.userAgent.indexOf("Safari") != -1) {
+          return "Safari";
+        } else if (navigator.userAgent.indexOf("Firefox") != -1) {
+          return "Firefox";
+        } else if (
+          navigator.userAgent.indexOf("MSIE") != -1 ||
+          !!document.documentMode == true
+        ) {
+          //IF IE > 10
+          return "IE";
+        } else {
+          return "unknown";
+        }
+      }
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("./sheet.csv")
+          .then((result) => {
+            return result.arrayBuffer();
+          })
+          .then((text_arraybuffer) => {
+            console.log("loaded csv", text_arraybuffer);
+
+            // convert arraybuffer to text
+            if (!("TextDecoder" in window)) {
+              alert("Sorry, this browser does not support TextEncoder...");
+            }
+            const enc = new TextDecoder("utf-8");
+            const text = enc.decode(text_arraybuffer);
+            console.group("original CSV");
+            console.log(text);
+            console.groupEnd();
+
+            // convert file to object
+            const XLSX_lib = XLSX;
+            const workbook = XLSX_lib.read(text_arraybuffer);
+            console.log("workbook", workbook);
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            console.log("sheet", sheet);
+            const data_array = XLSX_lib.utils.sheet_to_json(sheet, {
+              header: 1,
+              raw: true,
+              cellDates: false,
+            });
+            console.log("data_array", data_array);
+
+            // rough browser detection
+            const isChrome =
+              !!window.chrome &&
+              (!!window.chrome.webstore || !!window.chrome.runtime);
+
+            // fill HTML
+            const section = document.getElementById("js-fill");
+            section.innerHTML = `
+            <h2>Browser</h2>
+            <p>
+                Browser is probably ${probable_browser()}
+            </p>
+            <pre>${navigator.userAgent}
+            </pre>
+            <h2>original CSV</h2>
+            <pre>${text}
+            </pre>
+            <h2>Parsed array by SheetJS/XLSX</h2>
+            <pre>${data_array.join("\n")}
+            </pre>
+            `;
+          });
+      });
+    </script>
+  </head>
+  <body>
+    <h1>SheetJS Error Replication</h1>
+    <p>
+      <a href="./sheet.csv">See original CSV</a>
+    </p>
+    <p>
+      <a href="./xlsx.full.min.js">See XLSX library</a>
+    </p>
+    <noscript>will not load... javascript not enabled</noscript>
+    <section id="js-fill">loading...</section>
+  </body>
+</html>
