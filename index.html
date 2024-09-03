@@ -89,6 +89,24 @@
   <body>
     <h1>SheetJS Error Replication</h1>
     <p>
+      The following CSV contains "9-2" and other similar strings. In Chrome,
+      this gets parsed by SheetJS as 37136, which I believe to be an Excel date
+      representing 09-02-2001. In Firefox and other browsers, it remains "9-2".
+    </p>
+    <p>
+      Serial numbers:
+      <a
+        href="https://support.microsoft.com/en-gb/office/date-systems-in-excel-e7fe7167-48a9-4b96-bb53-5612a800b487"
+        >https://support.microsoft.com/en-gb/office/date-systems-in-excel-e7fe7167-48a9-4b96-bb53-5612a800b487</a
+      >
+    </p>
+    <p>
+      Convert from serial number to date:
+      <a href="https://serialnumbertodate.com/"
+        >https://serialnumbertodate.com/</a
+      >
+    </p>
+    <p>
       <a href="./sheet.csv">See original CSV</a>
     </p>
     <p>
