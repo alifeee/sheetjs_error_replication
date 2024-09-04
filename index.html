@@ -54,12 +54,19 @@
             console.log("workbook", workbook);
             const sheet = workbook.Sheets[workbook.SheetNames[0]];
             console.log("sheet", sheet);
-            const data_array = XLSX_lib.utils.sheet_to_json(sheet, {
+
+            // raw true
+            const data_array_raw_true = XLSX_lib.utils.sheet_to_json(sheet, {
               header: 1,
               raw: true,
-              cellDates: false,
             });
-            console.log("data_array", data_array);
+            console.log("data_array_raw_true", data_array_raw_true);
+
+            const data_array_raw_false = XLSX_lib.utils.sheet_to_json(sheet, {
+              header: 1,
+              raw: false,
+            });
+            console.log("data_array_raw_false", data_array_raw_false);
 
             // rough browser detection
             const isChrome =
@@ -78,8 +85,11 @@
             <h2>original CSV</h2>
             <pre>${text}
             </pre>
-            <h2>Parsed array by SheetJS/XLSX</h2>
-            <pre>${data_array.join("\n")}
+            <h2>Parsed array by SheetJS/XLSX (raw=true)</h2>
+            <pre>${data_array_raw_true.join("\n")}
+            </pre>
+            <h2>Parsed array by SheetJS/XLSX (raw=false)</h2>
+            <pre>${data_array_raw_false.join("\n")}
             </pre>
             `;
           });
@@ -111,6 +121,11 @@
     </p>
     <p>
       <a href="./xlsx.full.min.js">See XLSX library</a>
+    </p>
+    <p>
+      <a href="https://github.com/alifeee/sheetjs_error_replication">
+        See source (GitHub)
+      </a>
     </p>
     <noscript>will not load... javascript not enabled</noscript>
     <section id="js-fill">loading...</section>
